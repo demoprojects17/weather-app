@@ -28,3 +28,13 @@ body.light .theme-moon{color:var(--muted)}
 .card-expanded .condition{line-height:1.6;min-height:32px}
 @media(max-width:1150px){.forecast{flex-wrap:wrap}.forecast-card{flex-basis:calc(33.333% - 12px)}.forecast-card.is-expanded{flex-basis:calc(50% - 12px)}.card-summary{min-height:240px}}
 @media(max-width:760px){.forecast{gap:10px}.forecast-card{flex-basis:calc(33.333% - 10px);padding:16px 8px;border-radius:20px}.forecast-card.is-expanded{flex-basis:100%;padding:20px}.card-summary{min-height:180px}.card-summary .weather-icon{font-size:34px}.card-expanded .current-main .weather-icon{font-size:55px}}
+
+/* Keep the row steady while width, color, and content crossfade. */
+.forecast-card{position:relative;height:300px;overflow:hidden;transition:flex-grow 320ms cubic-bezier(.22,1,.36,1),flex-basis 320ms cubic-bezier(.22,1,.36,1),background-color 240ms ease,color 240ms ease,padding 320ms ease}
+.forecast-card .card-summary,.forecast-card .card-expanded{position:absolute;inset:18px;min-height:0;height:auto;transition:opacity 180ms ease,transform 240ms ease,visibility 240ms}
+.forecast-card .card-summary{display:flex;opacity:1;visibility:visible;transform:translateY(0)}
+.forecast-card .card-expanded{display:block;opacity:1;visibility:visible;transform:translateY(0);transition-delay:80ms}
+.forecast-card .card-summary[hidden]{display:flex;opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none}
+.forecast-card .card-expanded[hidden]{display:block;opacity:0;visibility:hidden;transform:translateY(8px);pointer-events:none;transition-delay:0ms}
+.card-expanded .condition,.card-expanded .card-top,.card-expanded .metrics{white-space:nowrap}
+@media(prefers-reduced-motion:reduce){.forecast-card,.forecast-card .card-summary,.forecast-card .card-expanded{transition:none}}

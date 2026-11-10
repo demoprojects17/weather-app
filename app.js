@@ -23,8 +23,9 @@ places.slice(1).forEach(async p=>{const b=document.createElement('button');b.cla
 try{const saved=JSON.parse(localStorage.getItem('weather-city'));if(saved&&typeof saved.name==='string'&&Number.isFinite(saved.latitude)&&Number.isFinite(saved.longitude))selected=saved;if(localStorage.getItem('weather-theme')==='light')$('#theme').click();}catch{}
 
 // Forecast cards start compact; the active card reveals its details in place.
-let activeForecastCard = null;
+let activeForecastCard = null, forecastCloseTimer;
 function hideForecastDetail() {
+  clearTimeout(forecastCloseTimer);
   if (!activeForecastCard) return;
   activeForecastCard.classList.remove('is-expanded');
   activeForecastCard.setAttribute('aria-expanded', 'false');
@@ -49,6 +50,7 @@ function attachForecastDetails(data) {
     card.setAttribute('aria-label', `${title}, ${date} — ამინდის დეტალები`);
     card.setAttribute('aria-expanded', 'false');
     const show = () => {
+      clearTimeout(forecastCloseTimer);
       if (activeForecastCard === card) return;
       hideForecastDetail();
       activeForecastCard = card;
@@ -59,7 +61,7 @@ function attachForecastDetails(data) {
     };
     card.addEventListener('mouseenter', show);
     card.addEventListener('mouseover', show);
-    card.addEventListener('mouseleave', () => { if (activeForecastCard === card) hideForecastDetail(); });
+    card.addEventListener('mouseleave', () => { forecastCloseTimer = setTimeout(() => { if (activeForecastCard === card) hideForecastDetail(); }, 100); });
     card.addEventListener('focus', show);
     card.addEventListener('blur', () => { if (activeForecastCard === card) hideForecastDetail(); });
     card.addEventListener('click', show);
