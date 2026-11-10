@@ -38,3 +38,13 @@ body.light .theme-moon{color:var(--muted)}
 .forecast-card .card-expanded[hidden]{display:block;opacity:0;visibility:hidden;transform:translateY(8px);pointer-events:none;transition-delay:0ms}
 .card-expanded .condition,.card-expanded .card-top,.card-expanded .metrics{white-space:nowrap}
 @media(prefers-reduced-motion:reduce){.forecast-card,.forecast-card .card-summary,.forecast-card .card-expanded{transition:none}}
+
+.locate-button{padding:0;background:none;color:inherit;flex-shrink:0}.locate-button:disabled{opacity:.45;cursor:wait}
+.intro-actions{display:flex;align-items:center;gap:18px}.quiet-button{background:var(--surface);border-radius:18px;padding:10px 13px;font-size:10px;white-space:nowrap}.quiet-button:disabled{opacity:.5;cursor:default}
+.city-feedback{font-size:10px;line-height:1.6;color:var(--muted);margin:0 0 10px}.city-feedback:empty{display:none}
+.city-group-title{font-size:10px;color:var(--muted);margin:2px 0;font-weight:400}
+.city-item{position:relative}.city-item .city{padding-right:42px}.city-save{position:absolute;right:9px;top:10px;background:transparent;color:var(--muted);font-size:23px;padding:4px}.city-save[aria-pressed=true]{color:#9ac9e6}
+.more-cities{width:100%;margin-top:12px;border-radius:18px;background:var(--surface);padding:14px;font-size:11px}.more-cities[hidden]{display:none}
+#location-dialog{width:420px;max-width:calc(100vw - 32px);padding:30px;border:1px solid var(--line);border-radius:28px;background:var(--surface);color:inherit;box-shadow:0 24px 100px #0006}#location-dialog::backdrop{background:#060910a8;backdrop-filter:blur(5px)}
+.location-symbol{font-size:36px;color:#9ac9e6;margin-bottom:16px}#location-dialog h2{font-size:19px;line-height:1.6}#location-dialog p{font-size:12px;line-height:1.9;color:var(--muted);margin:16px 0 22px}#location-dialog small{display:block;font-size:10px;color:var(--muted);margin-top:18px}.location-actions{display:grid;gap:10px}.location-actions button{border-radius:15px;padding:14px;font-size:12px;background:var(--blue);color:#11232d}.location-actions #skip-location{background:var(--bg);color:inherit}
+@media(max-width:760px){.intro{gap:18px;align-items:start;flex-direction:column}.intro-actions{width:100%}.city-item .city{padding-right:48px}}
