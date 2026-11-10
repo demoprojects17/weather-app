@@ -11,3 +11,14 @@ body.light .theme-sun{color:#11232d}
 body.light .theme-moon{color:var(--muted)}
 @media(max-width:760px){.theme{--toggle-size:32px}}
 @media(prefers-reduced-motion:reduce){.theme::before,.theme span{transition:none}}
+
+#forecast > article{cursor:pointer}
+#forecast > article:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+.forecast-detail{position:fixed;z-index:20;width:290px;max-width:calc(100vw - 24px);padding:20px;border:1px solid var(--line);border-radius:22px;background:var(--surface);color:inherit;box-shadow:0 14px 45px #0005;text-align:left}
+.forecast-detail[hidden]{display:none}
+.detail-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;font-weight:600}
+.detail-icon{font-size:32px}
+.forecast-detail p{font-size:11px;color:var(--muted);margin:10px 0 18px}
+.forecast-detail dl{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0}
+.forecast-detail dt{font-size:10px;color:var(--muted)}
+.forecast-detail dd{margin:5px 0 0;font-size:16px}
