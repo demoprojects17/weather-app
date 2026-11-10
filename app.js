@@ -172,9 +172,10 @@ function useLocation() {
     if (intent !== locationIntent) return;
     loadCity({name:'შენი მდებარეობა',country:'',latitude:position.coords.latitude,longitude:position.coords.longitude,isLocation:true});
   }, error => {
-    failed(error.code === 1 ? 'მდებარეობის ნებართვა არ გაიცა. შეგიძლია ქალაქი ძებნით აირჩიო.' : 'მდებარეობა ვერ განისაზღვრა. სცადე ხელახლა ან მოძებნე ქალაქი.');
+    failed(error.code === 1 ? 'მდებარეობის ნებართვა არ გაიცა. ბრაუზერში საიტის პარამეტრებიდან დაუშვი მდებარეობა და ხელახლა დააჭირე „მდებარეობის ნებართვას“.' : 'მდებარეობა ვერ განისაზღვრა. სცადე ხელახლა ან მოძებნე ქალაქი.');
   }, {enableHighAccuracy:false,timeout:12000,maximumAge:300000});
 }
+$('#location-permission').onclick = () => locationDialog.showModal();
 $('#locate').onclick = useLocation;
 $('#allow-location').onclick = useLocation;
 $('#skip-location').onclick = () => { rememberLocationChoice();locationDialog.close(); };

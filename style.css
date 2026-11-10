@@ -48,3 +48,6 @@ body.light .theme-moon{color:var(--muted)}
 #location-dialog{width:420px;max-width:calc(100vw - 32px);padding:30px;border:1px solid var(--line);border-radius:28px;background:var(--surface);color:inherit;box-shadow:0 24px 100px #0006}#location-dialog::backdrop{background:#060910a8;backdrop-filter:blur(5px)}
 .location-symbol{font-size:36px;color:#9ac9e6;margin-bottom:16px}#location-dialog h2{font-size:19px;line-height:1.6}#location-dialog p{font-size:12px;line-height:1.9;color:var(--muted);margin:16px 0 22px}#location-dialog small{display:block;font-size:10px;color:var(--muted);margin-top:18px}.location-actions{display:grid;gap:10px}.location-actions button{border-radius:15px;padding:14px;font-size:12px;background:var(--blue);color:#11232d}.location-actions #skip-location{background:var(--bg);color:inherit}
 @media(max-width:760px){.intro{gap:18px;align-items:start;flex-direction:column}.intro-actions{width:100%}.city-item .city{padding-right:48px}}
+
+.intro-actions{flex-wrap:wrap;justify-content:flex-end;gap:10px}#location-permission{color:inherit;border:1px solid var(--line)}
+@media(max-width:760px){.intro-actions{justify-content:flex-start}}
