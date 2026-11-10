@@ -22,71 +22,54 @@ places.forEach((p,i)=>{const b=document.createElement('button');b.className='map
 places.slice(1).forEach(async p=>{const b=document.createElement('button');b.className='city';b.innerHTML=`<div><small>${escapeHTML(p.country)}</small><h3>${escapeHTML(p.name)}</h3><p>იტვირთება…</p></div><div class="city-right">—</div>`;b.onclick=()=>loadCity(p);$('#cities').append(b);try{const d=await getJSON(forecastURL(p));const [icon,label]=weather(d.current.weather_code,d.current.is_day);document.querySelectorAll('.map-pin')[places.indexOf(p)].textContent=icon;b.querySelector('p').textContent=label;b.querySelector('.city-right').innerHTML=`<span class="weather-icon" aria-hidden="true">${icon}</span><div class="city-temp">${num(d.current.temperature_2m)}°</div>`;}catch{b.querySelector('p').textContent='სანახავად აირჩიე';}});
 try{const saved=JSON.parse(localStorage.getItem('weather-city'));if(saved&&typeof saved.name==='string'&&Number.isFinite(saved.latitude)&&Number.isFinite(saved.longitude))selected=saved;if(localStorage.getItem('weather-theme')==='light')$('#theme').click();}catch{}
 
-// A single shared detail card supports pointer, keyboard, and touch interaction.
-const forecastDetail = document.createElement('div');
-forecastDetail.id = 'forecast-detail';
-forecastDetail.className = 'forecast-detail';
-forecastDetail.setAttribute('role', 'tooltip');
-forecastDetail.hidden = true;
-document.body.append(forecastDetail);
-let activeForecastCard = null, detailCloseTimer;
+// Forecast cards start compact; the active card reveals its details in place.
+let activeForecastCard = null;
 function hideForecastDetail() {
-  clearTimeout(detailCloseTimer);
-  if (activeForecastCard) {
-    activeForecastCard.removeAttribute('aria-describedby');
-    activeForecastCard.setAttribute('aria-expanded', 'false');
-  }
-  activeForecastCard = null;
-  forecastDetail.hidden = true;
-}
-function placeForecastDetail() {
   if (!activeForecastCard) return;
-  const card = activeForecastCard.getBoundingClientRect();
-  const box = forecastDetail.getBoundingClientRect();
-  const left = Math.max(12, Math.min(innerWidth - box.width - 12, card.left + (card.width - box.width) / 2));
-  const below = card.bottom + 8;
-  const top = below + box.height <= innerHeight - 12 ? below : Math.max(12, card.top - box.height - 8);
-  forecastDetail.style.left = left + 'px';
-  forecastDetail.style.top = top + 'px';
+  activeForecastCard.classList.remove('is-expanded');
+  activeForecastCard.setAttribute('aria-expanded', 'false');
+  activeForecastCard.querySelector('.card-summary').hidden = false;
+  activeForecastCard.querySelector('.card-expanded').hidden = true;
+  activeForecastCard = null;
 }
 function attachForecastDetails(data) {
+  const day = data.daily;
   document.querySelectorAll('#forecast > article').forEach((card, index) => {
-    const day = data.daily;
-    const date = new Intl.DateTimeFormat('ka', {weekday:'long', day:'numeric', month:'long'}).format(new Date(day.time[index] + 'T12:00:00'));
+    const today = index === 0;
+    const date = day.time[index];
+    const title = today ? 'დღეს' : new Intl.DateTimeFormat('ka', {weekday:'short'}).format(new Date(date + 'T12:00:00'));
+    const [icon, description] = weather(today ? data.current.weather_code : day.weather_code[index], today ? data.current.is_day : 1);
+    const temperature = num(today ? data.current.temperature_2m : day.temperature_2m_max[index]);
+    const time = value => value ? value.slice(11,16) : '—';
+    const details = today ? card.innerHTML : `<div class="card-top"><span>${title}</span><span>${date.slice(8)}.${date.slice(5,7)}</span></div><div class="current-main"><span class="temperature">${temperature}°</span><span class="weather-icon" aria-hidden="true">${icon}</span></div><p class="condition">${description}</p><div class="metrics"><div><span>მაქსიმუმი</span><b>${num(day.temperature_2m_max[index])}°</b></div><div><span>მინიმუმი</span><b>${num(day.temperature_2m_min[index])}°</b></div><div><span>მზის ამოსვლა</span><b>${time(day.sunrise[index])}</b></div><div><span>მზის ჩასვლა</span><b>${time(day.sunset[index])}</b></div></div>`;
+    card.className = 'forecast-card';
+    card.innerHTML = `<div class="card-summary"><div><div class="day-name">${title}</div><div class="date">${date.slice(8)}.${date.slice(5,7)}</div></div><span class="weather-icon" aria-hidden="true">${icon}</span><div><div class="high">${temperature}°</div><div class="low">${num(day.temperature_2m_min[index])}°</div></div></div><div class="card-expanded" hidden>${details}</div>`;
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
-    card.setAttribute('aria-label', date + ' — ამინდის დეტალები');
+    card.setAttribute('aria-label', `${title}, ${date} — ამინდის დეტალები`);
     card.setAttribute('aria-expanded', 'false');
     const show = () => {
-      clearTimeout(detailCloseTimer);
-      if (activeForecastCard !== card) hideForecastDetail();
-      const [icon, description] = weather(index === 0 ? data.current.weather_code : day.weather_code[index], index === 0 ? data.current.is_day : 1);
-      const time = value => value ? value.slice(11,16) : '—';
-      forecastDetail.innerHTML = `<div class="detail-heading"><span>${escapeHTML(date)}</span><span class="detail-icon" aria-hidden="true">${icon}</span></div><p>${description}</p><dl><div><dt>მაქსიმუმი</dt><dd>${num(day.temperature_2m_max[index])}°</dd></div><div><dt>მინიმუმი</dt><dd>${num(day.temperature_2m_min[index])}°</dd></div><div><dt>მზის ამოსვლა</dt><dd>${time(day.sunrise[index])}</dd></div><div><dt>მზის ჩასვლა</dt><dd>${time(day.sunset[index])}</dd></div></dl>`;
+      if (activeForecastCard === card) return;
+      hideForecastDetail();
       activeForecastCard = card;
-      card.setAttribute('aria-describedby', forecastDetail.id);
+      card.classList.add('is-expanded');
       card.setAttribute('aria-expanded', 'true');
-      forecastDetail.hidden = false;
-      placeForecastDetail();
+      card.querySelector('.card-summary').hidden = true;
+      card.querySelector('.card-expanded').hidden = false;
     };
     card.addEventListener('mouseenter', show);
-    card.addEventListener('mouseover', () => { if (activeForecastCard !== card) show(); });
-    card.addEventListener('mouseleave', () => { detailCloseTimer = setTimeout(hideForecastDetail, 160); });
+    card.addEventListener('mouseover', show);
+    card.addEventListener('mouseleave', () => { if (activeForecastCard === card) hideForecastDetail(); });
     card.addEventListener('focus', show);
-    card.addEventListener('blur', hideForecastDetail);
+    card.addEventListener('blur', () => { if (activeForecastCard === card) hideForecastDetail(); });
     card.addEventListener('click', show);
     card.addEventListener('keydown', event => {
       if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); show(); }
     });
   });
 }
-forecastDetail.addEventListener('mouseenter', () => clearTimeout(detailCloseTimer));
-forecastDetail.addEventListener('mouseleave', hideForecastDetail);
 document.addEventListener('pointerdown', event => {
-  if (!event.target.closest('#forecast > article') && !forecastDetail.contains(event.target)) hideForecastDetail();
+  if (!event.target.closest('#forecast > article')) hideForecastDetail();
 });
 document.addEventListener('keydown', event => { if (event.key === 'Escape') hideForecastDetail(); });
-window.addEventListener('resize', hideForecastDetail);
-window.addEventListener('scroll', hideForecastDetail, {passive:true});
-
 loadCity(selected);
