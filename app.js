@@ -100,7 +100,7 @@ function isSaved(p) { return savedCities.some(city => cityKey(city) === cityKey(
 function updateSaveButton() {
   const button = $('#save-city');
   button.disabled = !!selected.isLocation;
-  button.textContent = selected.isLocation ? '⌖ შენი მდებარეობა' : isSaved(selected) ? '★ შენახულია' : '☆ ქალაქის შენახვა';
+  button.textContent = selected.isLocation ? `⌖ ${selected.name}` : isSaved(selected) ? '★ შენახულია' : '☆ ქალაქის შენახვა';
   button.setAttribute('aria-pressed', String(isSaved(selected)));
 }
 function toggleSavedCity(p) {
@@ -156,6 +156,16 @@ $('#find-city').onclick = () => { $('#search').focus();$('#search').scrollIntoVi
 $('#more-cities').onclick = () => { shownCities += 3;renderCityList(); };
 const locationDialog = $('#location-dialog');
 function rememberLocationChoice() { try { localStorage.setItem('weather-location-asked','yes'); } catch {} }
+async function resolveLocationName(latitude, longitude) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+  try {
+    const data = await getJSON('https://api.bigdatacloud.net/data/reverse-geocode-client?' + new URLSearchParams({latitude, longitude, localityLanguage:'ka'}), controller.signal);
+    const name = [data.city, data.locality, data.principalSubdivision].find(value => typeof value === 'string' && value.trim());
+    return name ? {name:name.trim(), country:typeof data.countryName === 'string' ? data.countryName : ''} : null;
+  } catch { return null; }
+  finally { clearTimeout(timeout); }
+}
 function useLocation() {
   rememberLocationChoice();locationDialog.close();
   const intent = ++locationIntent;
@@ -167,10 +177,20 @@ function useLocation() {
     $('#status').className='error';$('#status').textContent=message;
   };
   if (!navigator.geolocation) { failed('ბრაუზერს მდებარეობის განსაზღვრა არ შეუძლია. მოძებნე ქალაქი.');return; }
-  navigator.geolocation.getCurrentPosition(position => {
+  navigator.geolocation.getCurrentPosition(async position => {
     button.disabled=false;
     if (intent !== locationIntent) return;
-    loadCity({name:'შენი მდებარეობა',country:'',latitude:position.coords.latitude,longitude:position.coords.longitude,isLocation:true});
+    const {latitude, longitude} = position.coords;
+    const place = {name:`მდებარეობა ${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`,country:'',latitude,longitude,isLocation:true};
+    const weatherReady = loadCity(place);
+    const currentIntent = locationIntent;
+    const label = await resolveLocationName(latitude, longitude);
+    await weatherReady;
+    if (currentIntent !== locationIntent || selected !== place || !label) return;
+    place.name = label.name;
+    place.country = label.country;
+    $('#location').textContent = [place.name, place.country].filter(Boolean).join(', ');
+    updateSaveButton();
   }, error => {
     failed(error.code === 1 ? 'მდებარეობის ნებართვა არ გაიცა. ბრაუზერში საიტის პარამეტრებიდან დაუშვი მდებარეობა და ხელახლა დააჭირე „მდებარეობის ნებართვას“.' : 'მდებარეობა ვერ განისაზღვრა. სცადე ხელახლა ან მოძებნე ქალაქი.');
   }, {enableHighAccuracy:false,timeout:12000,maximumAge:300000});
