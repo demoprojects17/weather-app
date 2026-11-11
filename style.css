@@ -62,3 +62,11 @@ body.light .theme-moon{color:var(--muted)}
 @media(max-width:760px){.map-search{left:14px;bottom:14px;padding:11px 14px;gap:10px}.map-caption{bottom:70px;right:15px}}
 
 body.light .brand{color:#5685a0}
+
+body.light .world{background:#dcebf2;color:#304e60}
+body.light .world-map{filter:invert(1) sepia(.2) saturate(.7) hue-rotate(155deg);opacity:.9}
+body.light .map-grid{background-image:linear-gradient(#648da00d 1px,transparent 1px),linear-gradient(90deg,#648da00d 1px,transparent 1px)}
+body.light .map-pin{background:#f7fbfd;border-color:#b7ccd8;box-shadow:0 3px 10px #42637b18}
+body.light .map-pin:hover:after{background:#f7fbfd;color:#304e60;box-shadow:0 3px 10px #42637b18}
+body.light .map-search{background:#f7fbfdf2;color:#304e60;border-color:#b7ccd8;box-shadow:0 5px 18px #42637b12}
+body.light .map-caption{color:#526f80}
