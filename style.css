@@ -60,3 +60,5 @@ body.light .theme-moon{color:var(--muted)}
 .map-search{position:absolute;left:20px;bottom:20px;display:flex;align-items:center;gap:14px;padding:13px 17px;border:1px solid #41434b;border-radius:16px;background:#17181eeF;color:#e6edf2;box-shadow:0 5px 18px #0002;font-size:18px}
 .map-search span{font-size:11px}
 @media(max-width:760px){.map-search{left:14px;bottom:14px;padding:11px 14px;gap:10px}.map-caption{bottom:70px;right:15px}}
+
+body.light .brand{color:#5685a0}
