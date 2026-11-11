@@ -1,15 +1,34 @@
 # ცის ქვეშ
 
-Static Georgian weather website with city search, current weather, and a five-day forecast (the next five days, plus today's current conditions). No accounts or API keys.
+Georgian weather dashboard built with Next.js App Router and React. City search (including Georgian Samtredia), current conditions, five-day forecast, map, light/dark themes, browser-local favorites and opt-in geolocation. No accounts or API keys.
 
-## Local preview
+## Development
 
-Run `python3 -m http.server 3000`, then visit http://localhost:3000.
+Use Node.js 22 or newer.
 
-## Cloudflare Pages
+```sh
+npm ci
+npm run dev
+```
 
-Connect the GitHub repository in Cloudflare Pages. Select no framework, leave the build command empty, and set the output directory to `/`. Alternatively, deploy the static assets using Wrangler Pages.
+## Production
 
-Publish these files: `index.html`, `style.css`, `app.js`, `world.svg`.
+```sh
+npm run build
+npm run preview
+```
 
-Weather and geocoding: [Open-Meteo](https://open-meteo.com/) (free endpoint for non-commercial use). World map: Natural Earth public-domain geographic data via datasets/geo-countries. Google Fonts supplies Noto Sans Georgian; the system sans-serif is used if unavailable.
+Next.js exports the site into `out/`. Weather requests run in the browser; no server runtime is required.
+
+Cloudflare Pages: build command `npm run build`, output directory `out`, production branch `main`. The existing GitHub integration deploys pushes automatically.
+
+## Structure
+
+- `app/page.jsx`: dashboard composition
+- `app/use-weather.js`: weather, location, theme and favorites state
+- `app/search.jsx`, `app/forecast.jsx`, `app/cities.jsx`: interactive React components
+- `app/globals.css`: shared responsive styles
+- `lib/weather.js`: API helpers and city data
+- `public/world.svg`: map asset
+
+Weather/geocoding: Open-Meteo. Reverse geocoding: BigDataCloud (only after location consent). World map: Natural Earth public-domain data. Font: Noto Sans Georgian via Google Fonts, with a system fallback.
