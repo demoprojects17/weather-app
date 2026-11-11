@@ -201,5 +201,13 @@ $('#allow-location').onclick = useLocation;
 $('#skip-location').onclick = () => { rememberLocationChoice();locationDialog.close(); };
 locationDialog.addEventListener('cancel',rememberLocationChoice);
 renderCityList();
+// Map weather is loaded independently of the sidebar city selection.
+places.forEach(async (place, index) => {
+  try {
+    const data = await cityWeather(place);
+    const [icon] = weather(data.current.weather_code, data.current.is_day);
+    document.querySelectorAll('.map-pin')[index].textContent = icon;
+  } catch { /* Keep the location marker clickable if weather is unavailable. */ }
+});
 loadCity(selected);
 try { if (!localStorage.getItem('weather-location-asked')) locationDialog.showModal(); } catch { locationDialog.showModal(); }
