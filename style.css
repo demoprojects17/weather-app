@@ -51,3 +51,8 @@ body.light .theme-moon{color:var(--muted)}
 
 .intro-actions{flex-wrap:wrap;justify-content:flex-end;gap:10px}#location-permission{color:inherit;border:1px solid var(--line)}
 @media(max-width:760px){.intro-actions{justify-content:flex-start}}
+
+.summary-weather{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%}
+.summary-condition{display:flex;align-items:center;justify-content:center;min-height:42px;max-width:100%;font-size:11px;font-weight:500;line-height:1.6;color:var(--muted);overflow-wrap:anywhere;text-align:center}
+.card-summary .summary-weather .weather-icon{display:block;line-height:1.2;margin:0}
+@media(max-width:760px){.summary-condition{font-size:10px}.summary-weather{gap:7px}}
