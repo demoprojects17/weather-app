@@ -56,3 +56,7 @@ body.light .theme-moon{color:var(--muted)}
 .summary-condition{display:flex;align-items:center;justify-content:center;min-height:42px;max-width:100%;font-size:11px;font-weight:500;line-height:1.6;color:var(--muted);overflow-wrap:anywhere;text-align:center}
 .card-summary .summary-weather .weather-icon{display:block;line-height:1.2;margin:0}
 @media(max-width:760px){.summary-condition{font-size:10px}.summary-weather{gap:7px}}
+
+.map-search{position:absolute;left:20px;bottom:20px;display:flex;align-items:center;gap:14px;padding:13px 17px;border:1px solid #41434b;border-radius:16px;background:#17181eeF;color:#e6edf2;box-shadow:0 5px 18px #0002;font-size:18px}
+.map-search span{font-size:11px}
+@media(max-width:760px){.map-search{left:14px;bottom:14px;padding:11px 14px;gap:10px}.map-caption{bottom:70px;right:15px}}
